@@ -22,7 +22,14 @@ public class TresEnRaya{
             
             try {
                 
-                menu = Integer.parseInt(JOptionPane.showInputDialog("Seleccione una opción:"));
+                String input = JOptionPane.showInputDialog("Seleccione una opción:");
+                if(input == null){
+                    System.out.println();
+                    System.out.println("Salió con exito, vuelva pronto!");
+                    break;   // Si el usuario cancela el input, sale del programa.
+                }
+
+                menu = Integer.parseInt(input);
 
                 switch (menu) {
                     case 1:
@@ -40,6 +47,7 @@ public class TresEnRaya{
                             System.out.println(jugador2 + " : " + marcadorJugador2);
 
                         } else {
+                            System.out.println();
                             System.out.println("Aun no hay nombres o no se ha jugado ninguna partida");
                         }
                         break;
@@ -69,13 +77,17 @@ public class TresEnRaya{
                     case 4:
 
                         salir = true;
+                        System.out.println();
                         System.out.println("Salió con exito, vuelva pronto!");    
+                        break;
                 
                     default:
+                        System.out.println();
                         System.out.println("Opcion invalida");
                 }
                 
             } catch (Exception e) {
+                System.out.println();
                 System.out.println("Ingrese un numero valido");
             }
         }
@@ -86,8 +98,31 @@ public class TresEnRaya{
     
     public static void iniciarPartida() {    // No necesita recibir nada porque ya la misma funcion pide los nombres y controla todo lo del juego
  
-        jugador1 = JOptionPane.showInputDialog("Ingrese el nombre del jugador 1");
-        jugador2 = JOptionPane.showInputDialog("Ingrese el nombre del jugador 2");
+        do {
+            jugador1 = JOptionPane.showInputDialog("Ingrese el nombre del jugador 1");
+            if(jugador1 == null){
+                System.out.println();
+                System.out.println("Partida cancelada.");
+            return;   // Si el usuario cancela el input, sale de la función iniciarPartida y vuelve al menú de inicio.
+            }
+            if (jugador1.trim().isEmpty()) {
+                System.out.println();
+                System.out.println("El nombre no puede estar vacío, intente de nuevo.");
+            }
+        } while (jugador1.trim().isEmpty());  // El ciclo se repite hasta que el usuario ingrese un nombre no vacío para el jugador 1
+
+        do{
+            jugador2 = JOptionPane.showInputDialog("Ingrese el nombre del jugador 2");
+            if(jugador2 == null){
+                System.out.println();
+                System.out.println("Partida cancelada.");
+            return;   // Si el usuario cancela el input, sale de la función iniciarPartida y vuelve al menú de inicio.
+            }
+            if (jugador2.trim().isEmpty()) {
+                System.out.println();
+                System.out.println("El nombre no puede estar vacío, intente de nuevo.");
+            }
+        } while (jugador2.trim().isEmpty());
 
         char[][] tablero = {
 
@@ -110,32 +145,57 @@ public class TresEnRaya{
             boolean movimientoValido = false;
 
             while (!movimientoValido) {
-
-                try {
+                    String nombreActual = (jugadorActual == 'X') ? jugador1 : jugador2;    // Ternario para mostrar el nombre del jugador actual
                     
-                    if (jugadorActual == 'X') {    // Si el jugador actual usa x...
+                    String inputFila;
+                    do{ 
+                        inputFila = JOptionPane.showInputDialog("Turno de "+ nombreActual + "\nIngrese la fila (0-2):");
+                        if(inputFila == null ){
+                            System.out.println();
+                            System.out.println("Partida cancelada");
+                            return;   // Si el usuario cancela el input, sale de la función iniciarPartida y vuelve al menú de inicio.
+                        }
+                        try{
+                            fila = Integer.parseInt(inputFila);
+                            if (fila < 0 || fila > 2) {
+                                System.out.println();
+                                System.out.println("Error: La fila debe ser un numero entre 0 y 2.");
+                                fila = -1; // Reinicia fila para que el ciclo continue
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println();
+                            System.out.println("Error: '" + inputFila + "' no es un numero valido, intente de nuevo.");
+                            fila = -1; // Reinicia fila para que el ciclo continue
+                        }
+                    }while (fila == -1); // El ciclo se repite hasta que el usuario ingrese un numero valido para la fila
 
-                        System.out.println("\nTurno de " + jugador1);
-                        
-                    } else {
-                        System.out.println("\nTurno de " + jugador2);
-                    }
-
-                    fila = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la fila (0-2)"));
-                    columna = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la columna (0-2)"));
+                    String inputColumna;
+                    do{
+                        inputColumna = JOptionPane.showInputDialog("Turno de "+ nombreActual + "\nIngrese la columna (0-2):");
+                        if(inputColumna == null){
+                            System.out.println();
+                            System.out.println("Partida cancelada");
+                            return;   // Si el usuario cancela el input, sale de la función iniciarPartida y vuelve al menú de inicio.
+                        }
+                        try{
+                            columna = Integer.parseInt(inputColumna);
+                            if (columna < 0 || columna > 2) {
+                                System.out.println();
+                                System.out.println("Error: La columna debe ser un numero entre 0 y 2.");
+                                columna = -1; // Reinicia columna para que el ciclo continue
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println();
+                            System.out.println("Error: '" + inputColumna + "' no es un numero valido, intente de nuevo.");
+                            columna = -1; // Reinicia columna para que el ciclo continue
+                        }
+                    }while (columna == -1); // El ciclo se repite hasta que el usuario ingrese un numero valido para la columna
 
                     if (validarMovimiento(tablero, fila, columna)) {       // Llama a la funcion para validar el movimiento
-
                         movimientoValido = true;     // Si es valido el while termina
-
                     } else {
                         System.out.println("Movimiento invalido");
                     }
-
-                } catch (Exception e) {
-                    System.out.println("Debe ingresar numeros validos");
-                }
-
             }
             
             tablero[fila][columna] = jugadorActual;      // Guarda la jugada en la matriz
