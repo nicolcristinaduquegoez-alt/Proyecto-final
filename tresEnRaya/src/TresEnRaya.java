@@ -24,100 +24,240 @@ public class TresEnRaya{
                 
                 menu = Integer.parseInt(JOptionPane.showInputDialog("Seleccione una opción:"));
 
-                switch (menu){
+                switch (menu) {
                     case 1:
+
                         iniciarPartida();
                         break;
+
                     case 2:
-                        System.out.println("\n=====MARCADOR=====");
-                    
-                            if(jugador1 !=null && jugador2 != null){
-                                System.out.println(jugador1 + ": " + marcadorJugador1);
-                                System.out.println(jugador2 + ": " + marcadorJugador2);
-                            } else{
-                                System.out.println("Aun no se ha jugado ninguna partida");   
-                            }
+
+                        System.out.println("\n======== MARCADOR ========");
+                        
+                        if (jugador1 != null && jugador2 != null) {   // Verifica si jugador 1 y 2 tienen un nombre y sino esta vacio, imprimir nombres y puntajes de cada uno
+
+                            System.out.println(jugador1 + " : " + marcadorJugador1);
+                            System.out.println(jugador2 + " : " + marcadorJugador2);
+
+                        } else {
+                            System.out.println("Aun no hay nombres o no se ha jugado ninguna partida");
+                        }
                         break;
-                case 3: System.out.println("\n=====INSTRUCCIONES=====");
-                        System.out.println("El juego es Tres en Raya");
+
+                    case 3:
+
+                        System.out.println("\n======== INSTRUCCIONES ========");    
+                        System.out.println("Bienvenido al juego tres en raya, las instrucciones son simples: ");
+                        System.out.println("Los jugadores se alternan turnos");
                         System.out.println("Jugador 1 usa X");
                         System.out.println("Jugador 2 usa O");
-                        System.out.println("Gana quien complete una fila, columna o diagonal con sus símbolos");
-                        System.out.println("Debe ingresar fila y columnna entre 0 y 2");
+                        System.out.println("Gana el jugador que complete una fila, columna o diagonal");
+                        System.out.println("\n=====COMO COLOCAR TU JUGADA=====");
+                        System.out.println("El tablero tiene posiciones de 0 al 2 distribuidas en filas y columnas");
+                        System.out.println();
+                        System.out.println("       Col 0  Col 1  Col 2");
+                        System.out.println("Fila 0 [0,0]  [0,1]  [0,2]");
+                        System.out.println("Fila 1 [1,0]  [1,1]  [1,2]");
+                        System.out.println("Fila 2 [2,0]  [2,1]  [2,2]");
+                        System.out.println();
+                        System.out.println("Ejemplo: para el centro ingresa fila=1, columna=1");
+                        System.out.println("         para la esquina superior izquierda fila=0, columna=0");
+                        System.out.println();
+                        System.out.println("NOTA: si todas las casillas quedan llenas y no hay ganador se declara EMPATE");
                         break;
+
                     case 4:
+
                         salir = true;
-                        System.out.println("Programa finalizado. ¡Gracias por jugar!");
-                        break;
+                        System.out.println("Salió con exito, vuelva pronto!");    
+                
                     default:
-                        System.out.println("Opción inválida");
+                        System.out.println("Opcion invalida");
                 }
                 
             } catch (Exception e) {
-                System.out.println("Debe ingresar un número válido");
+                System.out.println("Ingrese un numero valido");
             }
-        }  
+        }
+         
     }
 
-public static void iniciarPartida(){
+    // Funcion principal
     
-    jugador1 = JOptionPane.showInputDialog("Ingrese el nombre del jugador 1");
-    jugador2 = JOptionPane.showInputDialog("Ingrese el nombre del jugador 2");
+    public static void iniciarPartida() {    // No necesita recibir nada porque ya la misma funcion pide los nombres y controla todo lo del juego
+ 
+        jugador1 = JOptionPane.showInputDialog("Ingrese el nombre del jugador 1");
+        jugador2 = JOptionPane.showInputDialog("Ingrese el nombre del jugador 2");
 
-    char[][] tablero = {
-        {' ',' ',' '},
-        {' ',' ',' '},
-        {' ',' ',' '}
-    };
+        char[][] tablero = {
 
-    char jugadorActual = 'X';
-    boolean ganador = false;
+            { ' ' , ' ' , ' ' },
+            { ' ' , ' ' , ' ' },
+            { ' ' , ' ' , ' ' }
 
-    while(!ganador && !tableroLleno(tablero)){
+        };
+        
+        char jugadorActual = 'X';
+        boolean ganador = false;
 
-        mostrarTablero(tablero);
+        while (!ganador && !tableroLleno(tablero)) {     // Ciclo principal
 
-        int fila = -1;
-        int columna = -1;
+            mostrarTablero(tablero);
 
-        boolean movimientoValido = false;
+            int fila = -1;      // Porque las posiciones validas del tablero son 0,1,2 entonces -1 es que no se ha ingresado nada
+            int columna = -1;
 
-        while(!movimientoValido){
-            try{
-                if(jugadorActual == 'X'){
-                    System.out.println("\nTurno de " + jugador1);
-                } else{
-                    System.out.println("\nTurno de " + jugador2);
+            boolean movimientoValido = false;
+
+            while (!movimientoValido) {
+
+                try {
+                    
+                    if (jugadorActual == 'X') {    // Si el jugador actual usa x...
+
+                        System.out.println("\nTurno de " + jugador1);
+                        
+                    } else {
+                        System.out.println("\nTurno de " + jugador2);
+                    }
+
+                    fila = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la fila (0-2)"));
+                    columna = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la columna (0-2)"));
+
+                    if (validarMovimiento(tablero, fila, columna)) {       // Llama a la funcion para validar el movimiento
+
+                        movimientoValido = true;     // Si es valido el while termina
+
+                    } else {
+                        System.out.println("Movimiento invalido");
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("Debe ingresar numeros validos");
                 }
 
-                fila = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la fila (0-2):"));
-                columna = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la columna (0-2):"));
+            }
+            
+            tablero[fila][columna] = jugadorActual;      // Guarda la jugada en la matriz
 
-                if(validarMovmiento(tablero, fila, columna)){
-                    movimientoValido = true;
-                }else{
-                    System.out.println("Movimiento Invalido");
+            if (verificarGanador(tablero, jugadorActual)) {
+
+                mostrarTablero(tablero);     // Si hay ganador muestra el tablero actualizado
+
+                if (jugadorActual == 'X') {     // En todo el if se verifica quien ganó
+
+                    System.out.println("\nGanador: " + jugador1);
+                    marcadorJugador1++;
+
+                } else {
+                    System.out.println("\nGanador: " + jugador2);
+                    marcadorJugador2++;
                 }
-            } catch (Exception e){
-                System.out.println("Debe ingresar números válidos");
+
+                ganador = true;    // Finalizar el juego, ya hay ganador, el primer while termina
+
+            } else {
+                jugadorActual = cambiarJugador(jugadorActual);     // Si nadie ganó todavia, se cambia el turno
             }
         }
 
-        tablero[fila][columna] = jugadorActual;
+        if (!ganador) {    // Si no hubo ganador 
 
-        if (verificarGanador(tablero, jugadorActual)){
             mostrarTablero(tablero);
-            if(jugadorActual == 'X'){
-                System.out.println("\nGanador: " + jugador1);
-                marcadorJugador1++;
-            } else{
-                System.out.println("\nGanador: " + jugador2);
-                marcadorJugador2++;
-            }
-            ganador = true;
-        }else{
-            jugadorActual = cambiarJugador(jugadorActual);
+            System.out.println("\nEl juego terminó en empate");
+            
         }
     }
-}
+
+    // Funciones "secundarias"
+
+    public static void mostrarTablero(char[][] tablero) {    // Funcion que muestra el tablero actualizado con cada jugada
+
+        System.out.println();
+
+        for (int i = 0; i < 3; i++) {    // Recorre las filas de la matriz
+
+            for (int j = 0; j < 3; j++) {    // Recorre las columnas
+
+                System.out.print(" " + tablero[i][j] + " ");    // Muestra lo que tien cada casilla  EJ: si tablero[0][1] = 'x', imprime x
+
+                if (j < 2) {     // si la columna es la ultima hacer |, que separa jugadas
+                    System.out.print("|");
+                }
+            }
+
+            System.out.println();
+
+            if (i < 2) {     // Separa jugadas
+                System.out.println("-----------");
+            }
+        }
+    }
+
+    public static boolean validarMovimiento(char[][] tablero, int fila, int columna) {    // Funcion para validar si fila y columna estan entre 0 y 2, y si ya esta llena la casilla
+
+        if (fila < 0 || fila > 2 || columna < 0 || columna > 2) {
+
+            return false;       // Devuelve movimiento invalido
+        }
+
+        if (tablero[fila][columna] != ' ') {      // Verifica si la casilla esta llena
+
+            return false;  
+        }
+        return true;      // Si pasa las anteriores dos validaciones entonces movimiento valido
+    }
+
+    public static boolean tableroLleno(char[][] tablero) {     // Funcion que verifica si el tablero esta lleno
+
+        for (int i = 0; i < 3; i++) {
+
+            for (int j = 0; j < 3; j++) {
+
+                if (tablero[i][j] == ' ') {  
+
+                    return false;     // Si hay casilla vacia entonces el tablero no esta lleno, devuelve false
+                }
+            }
+        }
+        return true;     // Y si no hay espacios vacios el tablero esta lleno, devuelve true
+    }
+
+    public static char cambiarJugador (char jugadorActual){
+
+        if (jugadorActual == 'X') {
+            return 'O';    // Si el jugador actual es x, el siguiente turno es o
+        } else {
+            return 'X';    // Si el jugador actual es o, el siguiente turno es x
+        }
+    }
+
+    public static boolean verificarGanador(char[][] tablero, char jugadorActual){
+
+        //Verificar filas
+        for (int i = 0; i < 3; i++) {
+            if (tablero[i][0] == jugadorActual && tablero[i][1] == jugadorActual && tablero[i][2] == jugadorActual) {
+                return true;    // Si hay una fila completa del mismo simbolo, devuelve true, hay ganador
+            }  
+        }
+        
+        //Verificar columnas
+        for (int j = 0; j < 3; j++) {
+            if (tablero[0][j] == jugadorActual && tablero[1][j] == jugadorActual && tablero[2][j] == jugadorActual) {
+                return true;    // Si hay una columna completa del mismo simbolo, devuelve true, hay ganador
+            }  
+        }
+
+        //Verificar diagonal principal
+        if (tablero[0][0] == jugadorActual && tablero[1][1] == jugadorActual && tablero[2][2] == jugadorActual) {
+            return true;    // Si hay una diagonal completa del mismo simbolo, devuelve true, hay ganador
+        }
+
+        //Verificar diagonal inversa
+        if (tablero[0][2] == jugadorActual && tablero[1][1] == jugadorActual && tablero[2][0] == jugadorActual) {
+            return true;    // Si hay una diagonal completa del mismo simbolo, devuelve true, hay ganador
+        }
+        return false;   // Si no hay ganador, devuelve false
+    }
+
 }
